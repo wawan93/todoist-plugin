@@ -10,9 +10,17 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.wawan93.todoistplugin.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+
+        <projectConfigurable parentId="tools"
+                             instance="com.github.wawan93.todoistplugin.settings.AppSettingsConfigurable"
+                             id="com.github.wawan93.todoistplugin.settings.AppSettingsConfigurable"
+                             displayName="Todoist Plugin settings"
+                             nonDefaultProject="true"/>
+        <projectService serviceImplementation="com.github.wawan93.todoistplugin.settings.AppSettingsState"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.wawan93.todoistplugin.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
+        <listener class="com.github.wawan93.todoistplugin.listeners.MyApplicationActivationListener"
+                  topic="com.intellij.openapi.application.ApplicationActivationListener"/>
     </applicationListeners>
 </idea-plugin>
