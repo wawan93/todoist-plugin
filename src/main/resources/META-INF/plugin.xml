@@ -1,7 +1,7 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.wawan93.todoistplugin</id>
-    <name>todoist-plugin</name>
+    <name>Todoist</name>
     <vendor>wawan93</vendor>
 
     <depends>com.intellij.modules.platform</depends>
@@ -9,14 +9,14 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.wawan93.todoistplugin.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <toolWindow factoryClass="com.github.wawan93.todoistplugin.toolWindow.MyToolWindowFactory"
+                    id="MyToolWindow"/>
 
         <projectConfigurable parentId="tools"
                              instance="com.github.wawan93.todoistplugin.settings.AppSettingsConfigurable"
                              id="com.github.wawan93.todoistplugin.settings.AppSettingsConfigurable"
-                             displayName="Todoist Plugin settings"
+                             displayName="Todoist Plugin Settings"
                              nonDefaultProject="true"/>
-        <projectService serviceImplementation="com.github.wawan93.todoistplugin.settings.AppSettingsState"/>
     </extensions>
 
     <applicationListeners>
