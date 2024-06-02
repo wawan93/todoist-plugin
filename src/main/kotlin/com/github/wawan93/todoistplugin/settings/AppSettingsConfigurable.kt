@@ -22,8 +22,8 @@ class AppSettingsConfigurable(private val project: Project) : Configurable {
             try {
                 project.getService(MyProjectService::class.java)
                     .getTodoistProjects(appSettingsComponent!!.getTodoistAPIKey(), object:
-                        ApiCallback<List<TodoistProject>> {
-                        override fun onSuccess(result: List<TodoistProject>) {
+                        ApiCallback<Array<TodoistProject>> {
+                        override fun onSuccess(result: Array<TodoistProject>) {
                             appSettingsComponent!!.projectsDropdown.setListData(result.map { it.name }.toTypedArray())
                         }
 
