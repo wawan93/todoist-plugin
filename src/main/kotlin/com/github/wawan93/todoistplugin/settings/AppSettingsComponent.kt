@@ -9,13 +9,12 @@ import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
 
-
 class AppSettingsComponent {
     private var panel: JPanel? = null
 
     private var todoistAPIKey: JBTextField = JBTextField()
     var loadButton: JButton = JButton("Load Projects")
-    var projectsDropdown: JBList<String> = JBList<String>()
+    var projectsDropdown: JBList<KeyValueItem> = JBList<KeyValueItem>()
 
     init {
         panel = FormBuilder.createFormBuilder()
@@ -23,7 +22,7 @@ class AppSettingsComponent {
             .addComponent(loadButton)
             .addLabeledComponent(JBLabel("Projects: "), projectsDropdown, 1, false)
             .addComponentFillVertically(JPanel(), 0)
-            .getPanel()
+            .panel
     }
 
     fun getPreferredFocusedComponent(): JComponent {
@@ -40,5 +39,16 @@ class AppSettingsComponent {
 
     fun setTodoistAPIKey(@NotNull value: String) {
         todoistAPIKey.text = value
+    }
+
+    fun setProjects(projects: Array<KeyValueItem>) {
+        projectsDropdown.setListData(projects)
+    }
+
+    fun getSelectedProject(): String {
+        if (projectsDropdown.selectedValue == null) {
+            return ""
+        }
+        return projectsDropdown.selectedValue.key
     }
 }
