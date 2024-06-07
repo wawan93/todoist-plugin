@@ -8,9 +8,12 @@ import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import com.intellij.ui.content.ContentFactory
-import com.github.wawan93.todoistplugin.MyBundle
+import com.github.wawan93.todoistplugin.services.ApiCallback
 import com.github.wawan93.todoistplugin.services.MyProjectService
-import javax.swing.JButton
+import com.github.wawan93.todoistplugin.services.TodoistTask
+import com.github.wawan93.todoistplugin.settings.AppSettingsState
+import com.intellij.ui.components.JBCheckBox
+import java.io.IOException
 
 
 class MyToolWindowFactory : ToolWindowFactory {
@@ -30,14 +33,18 @@ class MyToolWindowFactory : ToolWindowFactory {
     class MyToolWindow(toolWindow: ToolWindow) {
 
         private val service = toolWindow.project.service<MyProjectService>()
+        private val appSettingsState = toolWindow.project.getService(AppSettingsState::class.java)
 
         fun getContent() = JBPanel<JBPanel<*>>().apply {
-            val label = JBLabel(MyBundle.message("randomLabel", "?"))
+            service.getTasks(appSettingsState.todoistToken, appSettingsState.selectedProjectId, object : ApiCallback<Array<TodoistTask>> {
+                override fun onSuccess(result: Array<TodoistTask>) {
+                    result.forEach {
+                        add(JBCheckBox(it.content))
+                    }
+                }
 
-            add(label)
-            add(JButton(MyBundle.message("shuffle")).apply {
-                addActionListener {
-                    label.text = MyBundle.message("randomLabel", service.getRandomNumber())
+                override fun onFailure(error: IOException) {
+                    add(JBLabel("Error: ${error.message}"))
                 }
             })
         }
