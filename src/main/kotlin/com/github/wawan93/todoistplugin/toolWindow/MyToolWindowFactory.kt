@@ -36,17 +36,20 @@ class MyToolWindowFactory : ToolWindowFactory {
         private val appSettingsState = toolWindow.project.getService(AppSettingsState::class.java)
 
         fun getContent() = JBPanel<JBPanel<*>>().apply {
-            service.getTasks(appSettingsState.todoistToken, appSettingsState.selectedProjectId, object : ApiCallback<Array<TodoistTask>> {
-                override fun onSuccess(result: Array<TodoistTask>) {
-                    result.forEach {
-                        add(JBCheckBox(it.content))
+            service.getTasks(
+                appSettingsState.todoistToken,
+                appSettingsState.selectedProjectId,
+                object : ApiCallback<Array<TodoistTask>> {
+                    override fun onSuccess(result: Array<TodoistTask>) {
+                        result.forEach {
+                            add(JBCheckBox(it.content))
+                        }
                     }
-                }
 
-                override fun onFailure(error: IOException) {
-                    add(JBLabel("Error: ${error.message}"))
-                }
-            })
+                    override fun onFailure(error: IOException) {
+                        add(JBLabel("Error: ${error.message}"))
+                    }
+                })
         }
     }
 }
