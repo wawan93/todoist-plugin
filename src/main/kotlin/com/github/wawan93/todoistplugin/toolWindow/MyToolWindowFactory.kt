@@ -14,6 +14,7 @@ import com.github.wawan93.todoistplugin.services.TodoistTask
 import com.github.wawan93.todoistplugin.settings.AppSettingsState
 import com.intellij.ui.components.JBCheckBox
 import java.io.IOException
+import javax.swing.BoxLayout
 
 
 class MyToolWindowFactory : ToolWindowFactory {
@@ -36,13 +37,14 @@ class MyToolWindowFactory : ToolWindowFactory {
         private val appSettingsState = toolWindow.project.getService(AppSettingsState::class.java)
 
         fun getContent() = JBPanel<JBPanel<*>>().apply {
+            layout = BoxLayout(this, BoxLayout.Y_AXIS)
             service.getTasks(
                 appSettingsState.todoistToken,
                 appSettingsState.selectedProjectId,
                 object : ApiCallback<Array<TodoistTask>> {
                     override fun onSuccess(result: Array<TodoistTask>) {
-                        result.forEach {
-                            add(JBCheckBox(it.content))
+                        result.forEach { task ->
+                            add(createTaskCheckbox(task))
                         }
                     }
 
@@ -50,6 +52,33 @@ class MyToolWindowFactory : ToolWindowFactory {
                         add(JBLabel("Error: ${error.message}"))
                     }
                 })
+        }
+
+        private fun createTaskCheckbox(task: TodoistTask): JBCheckBox {
+            val checkBox = JBCheckBox(task.content)
+            if (task.isCompleted!!) {
+                checkBox.isSelected = true
+            }
+            checkBox.addActionListener {
+                if (!checkBox.isSelected) {
+                    return@addActionListener
+                }
+
+                service.closeTask(
+                    appSettingsState.todoistToken,
+                    task.id!!,
+                    object : ApiCallback<String> {
+                        override fun onSuccess(result: String) {
+                            thisLogger().warn("Task closed")
+                        }
+
+                        override fun onFailure(error: IOException) {
+                            thisLogger().error("Can't close task", error)
+                        }
+                    }
+                )
+            }
+            return checkBox
         }
     }
 }

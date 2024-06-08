@@ -8,6 +8,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
 @Service(Service.Level.PROJECT)
@@ -87,5 +88,37 @@ class MyProjectService(project: Project) {
             }
         })
 
+    }
+
+    fun closeTask(token: String, taskId: String, callback: ApiCallback<String>) {
+        thisLogger().warn("Closing Todoist task")
+        if (token == "") {
+            throw RuntimeException("Token is empty")
+        }
+
+        if (taskId == "") {
+            throw RuntimeException("Task ID is empty. Please select a task.")
+        }
+
+        val req = Request.Builder()
+            .url("https://api.todoist.com/rest/v2/tasks/$taskId/close")
+            .header("Authorization", "Bearer $token")
+            .post("".toRequestBody(null))
+            .build()
+
+        httpClient.newCall(req).enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                callback.onFailure(e)
+            }
+
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                response.body?.let { responseBody ->
+                    val responseData = responseBody.string()
+                    callback.onSuccess(responseData)
+                } ?: run {
+                    callback.onFailure(IOException("Response body is null"))
+                }
+            }
+        })
     }
 }
