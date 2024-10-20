@@ -22,6 +22,7 @@ data class TodoistTask (
   @SerializedName("project_id"    ) var projectId    : String?           = null,
   @SerializedName("section_id"    ) var sectionId    : String?           = null,
   @SerializedName("parent_id"     ) var parentId     : String?           = null,
-  @SerializedName("url"           ) var url          : String?           = null
+  @SerializedName("url"           ) var url          : String?           = null,
 
+  var level : Int = 0,
 )

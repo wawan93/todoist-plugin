@@ -41,14 +41,12 @@ class MyProjectService(project: Project) {
             }
 
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                response.body?.let { responseBody ->
+                response.body.let { responseBody ->
                     val listType = object : TypeToken<Array<TodoistProject>>() {}.type
                     val responseData = responseBody.string()
                     val gson = Gson()
                     val resp: Array<TodoistProject> = gson.fromJson(responseData, listType)
                     callback.onSuccess(resp)
-                } ?: run {
-                    callback.onFailure(IOException("Response body is null"))
                 }
             }
         })
@@ -76,14 +74,12 @@ class MyProjectService(project: Project) {
             }
 
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                response.body?.let { responseBody ->
+                response.body.let { responseBody ->
                     val listType = object : TypeToken<Array<TodoistTask>>() {}.type
                     val responseData = responseBody.string()
                     val gson = Gson()
                     val resp: Array<TodoistTask> = gson.fromJson(responseData, listType)
                     callback.onSuccess(resp)
-                } ?: run {
-                    callback.onFailure(IOException("Response body is null"))
                 }
             }
         })
@@ -112,11 +108,9 @@ class MyProjectService(project: Project) {
             }
 
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                response.body?.let { responseBody ->
+                response.body.let { responseBody ->
                     val responseData = responseBody.string()
                     callback.onSuccess(responseData)
-                } ?: run {
-                    callback.onFailure(IOException("Response body is null"))
                 }
             }
         })
